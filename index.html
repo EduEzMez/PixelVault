@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PixelVault — Arte Digital Exclusivo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Syne+Mono&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── TOKENS ─────────────────────────────────── */
+    :root {
+      --bg:        #09090b;
+      --surface:   #111113;
+      --border:    #1f1f23;
+      --accent:    #e8ff47;
+      --accent2:   #ff6b35;
+      --text:      #f4f4f5;
+      --muted:     #71717a;
+      --gold:      #f5c842;
+      --r:         6px;
+      --font-head: 'Syne', sans-serif;
+      --font-mono: 'Syne Mono', monospace;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE OVERLAY ──────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ─── LAYOUT ─────────────────────────────────── */
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+
+    /* ─── NAV ────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      background: rgba(9,9,11,0.85);
+      backdrop-filter: blur(12px);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      gap: 20px;
+    }
+    .logo {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .logo span { color: var(--accent); }
+
+    .nav-actions { display: flex; align-items: center; gap: 12px; }
+
+    /* ─── BUTTONS ────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 20px;
+      border-radius: var(--r);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .18s ease;
+      border: 1px solid transparent;
+      text-decoration: none;
+    }
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--muted);
+    }
+    .btn-ghost:hover { border-color: var(--muted); color: var(--text); }
+
+    .btn-accent {
+      background: var(--accent);
+      color: #09090b;
+      font-weight: 700;
+    }
+    .btn-accent:hover { background: #d4eb3a; transform: translateY(-1px); }
+
+    .btn-outline {
+      background: transparent;
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .btn-outline:hover { background: var(--accent); color: #09090b; }
+
+    .btn-buy {
+      background: var(--accent2);
+      color: #fff;
+      font-weight: 700;
+      width: 100%;
+      justify-content: center;
+      padding: 12px;
+    }
+    .btn-buy:hover { background: #e55a27; transform: translateY(-1px); }
+    .btn-buy:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+    /* ─── HERO ───────────────────────────────────── */
+    .hero {
+      padding: 100px 0 80px;
+      position: relative;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: -40px; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(232,255,71,.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      margin-bottom: 28px;
+      letter-spacing: .05em;
+    }
+    .hero-tag::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; } 50% { opacity: .3; }
+    }
+
+    h1 {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: clamp(2.6rem, 6vw, 4.8rem);
+      line-height: 1.0;
+      letter-spacing: -0.04em;
+      max-width: 780px;
+      margin-bottom: 28px;
+    }
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
+      display: block;
+    }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 64px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .stat-num {
+      font-family: var(--font-head);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .stat-label { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+    /* ─── SECTION TITLES ─────────────────────────── */
+    .section { padding: 80px 0; }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    h2 {
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+    .section-sub { color: var(--muted); max-width: 480px; margin-bottom: 48px; line-height: 1.7; }
+
+    /* ─── PLAN CARD ──────────────────────────────── */
+    .plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+
+    .plan-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      background: var(--surface);
+      position: relative;
+      transition: border-color .2s;
+    }
+    .plan-card:hover { border-color: var(--muted); }
+    .plan-card.featured {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(232,255,71,.04) 0%, var(--surface) 100%);
+    }
+    .plan-badge {
+      position: absolute;
+      top: -12px; right: 24px;
+      background: var(--accent);
+      color: #09090b;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      padding: 3px 10px;
+      border-radius: 999px;
+      letter-spacing: .04em;
+    }
+    .plan-name {
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 12px;
+    }
+    .plan-price {
+      font-family: var(--font-head);
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .plan-price span { font-size: 1.1rem; font-weight: 400; color: var(--muted); }
+    .plan-desc { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+    .plan-features { list-style: none; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px; }
+    .plan-features li { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+    .plan-features li::before {
+      content: '✓';
+      color: var(--accent);
+      font-weight: 700;
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+    }
+
+    /* ─── ART GRID ───────────────────────────────── */
+    .art-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .art-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--surface);
+      transition: transform .2s, border-color .2s;
+      position: relative;
+    }
+    .art-card:hover { transform: translateY(-4px); border-color: var(--muted); }
+
+    .art-thumb {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Generated CSS art thumbnails */
+    .art-thumb canvas { width: 100%; height: 100%; display: block; }
+
+    .art-locked-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(9,9,11,.7);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .art-card:hover .art-locked-overlay { opacity: 1; }
+    .lock-icon { font-size: 2rem; }
+    .lock-text { font-size: 13px; color: var(--muted); font-family: var(--font-mono); }
+
+    .art-info { padding: 18px; }
+    .art-title {
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .art-meta { display: flex; align-items: center; justify-content: space-between; }
+    .art-artist { font-size: 12px; color: var(--muted); }
+    .art-price {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--accent2);
+      font-weight: 700;
+    }
+    .art-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(232,255,71,.1);
+      color: var(--accent);
+      font-size: 11px;
+      font-family: var(--font-mono);
+      margin-top: 8px;
+    }
+
+    /* ─── MODAL ──────────────────────────────────── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.8);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 480px;
+      padding: 36px;
+      position: relative;
+      animation: slideUp .25s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: var(--border);
+      border: none;
+      color: var(--muted);
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .modal-close:hover { background: var(--muted); color: var(--text); }
+
+    .modal h3 {
+      font-family: var(--font-head);
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+    .modal-sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+
+    .form-field { margin-bottom: 18px; }
+    .form-field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-family: var(--font-mono);
+      letter-spacing: .03em;
+    }
+    .form-field input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 11px 14px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .form-field input:focus { border-color: var(--accent); }
+    .form-field input::placeholder { color: var(--muted); }
+
+    /* ─── TOAST ──────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      z-index: 9000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toast-item {
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      animation: toastIn .2s ease;
+      max-width: 320px;
+    }
+    @keyframes toastIn {
+      from { transform: translateX(20px); opacity: 0; }
+      to   { transform: translateX(0);    opacity: 1; }
+    }
+    .toast-success { border-color: var(--accent); color: var(--accent); }
+    .toast-error   { border-color: var(--accent2); color: var(--accent2); }
+    .toast-info    { border-color: var(--muted);   color: var(--text); }
+
+    /* ─── USER CHIP ──────────────────────────────── */
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 13px;
+    }
+    .user-chip .avatar {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #09090b;
+    }
+    .badge-pro {
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(232,255,71,.12);
+      color: var(--accent);
+      font-size: 10px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+    .badge-free {
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--border);
+      color: var(--muted);
+      font-size: 10px;
+      font-family: var(--font-mono);
+    }
+
+    /* ─── CREDIT BALANCE ─────────────────────────── */
+    .credit-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .credit-info { display: flex; align-items: center; gap: 16px; }
+    .credit-amount {
+      font-family: var(--font-head);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--gold);
+    }
+    .credit-label { font-size: 13px; color: var(--muted); }
+
+    /* ─── FOOTER ─────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* ─── MISC ───────────────────────────────────── */
+    .divider { height: 1px; background: var(--border); margin: 0; }
+    .hidden { display: none !important; }
+
+    @media (max-width: 640px) {
+      h1 { font-size: 2.2rem; }
+      .hero-stats { gap: 24px; }
+      .modal { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ──────────────────────────────────────── -->
+<nav>
+  <div class="container nav-inner">
+    <a href="#" class="logo">Pixel<span>Vault</span></a>
+    <div class="nav-actions" id="navActions">
+      <button class="btn btn-ghost" onclick="openModal('loginModal')">Ingresar</button>
+      <button class="btn btn-accent" onclick="openModal('registerModal')">Empezar gratis</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── HERO ──────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-tag">Arte Digital · Edición Limitada · ARG</div>
+    <h1>El mercado de arte<br>digital más<em>exclusivo.</em></h1>
+    <p class="hero-sub">Accedé a obras únicas de artistas digitales argentinos. Suscribite y comprá piezas irrepetibles con créditos incluidos en tu plan.</p>
+    <div class="hero-actions">
+      <button class="btn btn-accent" onclick="openModal('registerModal')">Suscribirme — $1.000/mes</button>
+      <button class="btn btn-ghost" onclick="scrollTo('#catalogo')">Ver catálogo</button>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">48</div>
+        <div class="stat-label">Obras exclusivas</div>
+      </div>
+      <div>
+        <div class="stat-num">12</div>
+        <div class="stat-label">Artistas activos</div>
+      </div>
+      <div>
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Digital + descargable</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─── PLANES ────────────────────────────────────── -->
+<section class="section" id="planes">
+  <div class="container">
+    <div class="section-label">// PLANES</div>
+    <h2>Elegí tu acceso</h2>
+    <p class="section-sub">Cada plan incluye créditos para comprar obras directamente en el catálogo. Sin sorpresas.</p>
+
+    <div class="plan-grid">
+      <!-- FREE -->
+      <div class="plan-card">
+        <div class="plan-name">Visitante</div>
+        <div class="plan-price">$0 <span>/ mes</span></div>
+        <div class="plan-desc">Explorá el catálogo sin compromiso</div>
+        <ul class="plan-features">
+          <li>Ver catálogo completo</li>
+          <li>Sin créditos incluidos</li>
+          <li>Vista previa de obras</li>
+        </ul>
+        <button class="btn btn-ghost" style="width:100%;justify-content:center" onclick="openModal('registerModal')">Registrarse gratis</button>
+      </div>
+
+      <!-- PRO -->
+      <div class="plan-card featured">
+        <div class="plan-badge">RECOMENDADO</div>
+        <div class="plan-name">Coleccionista Pro</div>
+        <div class="plan-price">$1.000 <span>/ mes</span></div>
+        <div class="plan-desc">Acceso completo + créditos para comprar</div>
+        <ul class="plan-features">
+          <li>Todo de Visitante</li>
+          <li><strong>$500 en créditos</strong> cada mes</li>
+          <li>Descarga en alta resolución</li>
+          <li>Acceso anticipado a nuevas obras</li>
+          <li>Badge exclusivo de coleccionista</li>
+        </ul>
+        <button class="btn btn-accent" style="width:100%;justify-content:center" onclick="iniciarSuscripcion()">Suscribirme con MercadoPago</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─── CATÁLOGO ──────────────────────────────────── -->
+<section class="section" id="catalogo">
+  <div class="container">
+    <div class="section-label">// CATÁLOGO</div>
+    <h2>Obras disponibles</h2>
+    <p class="section-sub">Cada pieza es única. Una vez comprada, recibís el archivo en alta resolución y el certificado digital de autenticidad.</p>
+
+    <!-- Credit bar (visible para suscriptores) -->
+    <div class="credit-bar hidden" id="creditBar">
+      <div class="credit-info">
+        <div>
+          <div class="credit-amount" id="creditAmount">$500</div>
+          <div class="credit-label">Créditos disponibles este mes</div>
+        </div>
+      </div>
+      <button class="btn btn-ghost" style="font-size:13px" onclick="openModal('rechargeModal')">+ Agregar créditos</button>
+    </div>
+
+    <div class="art-grid" id="artGrid">
+      <!-- generado por JS -->
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─── FOOTER ────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <p style="margin-bottom:8px">
+      <strong style="font-family:var(--font-head);color:var(--text)">PixelVault</strong> — Demo educativo de integración MercadoPago + Supabase
+    </p>
+    <p>Hecho con HTML/CSS/JS · Supabase · Cloudflare Pages · MercadoPago</p>
+  </div>
+</footer>
+
+<!-- ─── TOAST ──────────────────────────────────────── -->
+<div id="toast"></div>
+
+<!-- ─── MODAL: REGISTRO ───────────────────────────── -->
+<div class="modal-backdrop" id="registerModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('registerModal')">✕</button>
+    <h3>Crear cuenta</h3>
+    <p class="modal-sub">Ingresá tus datos para registrarte</p>
+    <div class="form-field">
+      <label>EMAIL</label>
+      <input type="email" id="reg-email" placeholder="vos@email.com" />
+    </div>
+    <div class="form-field">
+      <label>CONTRASEÑA</label>
+      <input type="password" id="reg-pass" placeholder="········" />
+    </div>
+    <button class="btn btn-accent" style="width:100%;justify-content:center;margin-top:4px" onclick="registrar()">Crear cuenta</button>
+    <p style="text-align:center;margin-top:18px;font-size:13px;color:var(--muted)">
+      ¿Ya tenés cuenta? <a href="#" style="color:var(--accent);text-decoration:none" onclick="switchModal('registerModal','loginModal')">Ingresá</a>
+    </p>
+  </div>
+</div>
+
+<!-- ─── MODAL: LOGIN ──────────────────────────────── -->
+<div class="modal-backdrop" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    <h3>Bienvenido de nuevo</h3>
+    <p class="modal-sub">Iniciá sesión en tu cuenta</p>
+    <div class="form-field">
+      <label>EMAIL</label>
+      <input type="email" id="login-email" placeholder="vos@email.com" />
+    </div>
+    <div class="form-field">
+      <label>CONTRASEÑA</label>
+      <input type="password" id="login-pass" placeholder="········" />
+    </div>
+    <button class="btn btn-accent" style="width:100%;justify-content:center;margin-top:4px" onclick="login()">Ingresar</button>
+    <p style="text-align:center;margin-top:18px;font-size:13px;color:var(--muted)">
+      ¿No tenés cuenta? <a href="#" style="color:var(--accent);text-decoration:none" onclick="switchModal('loginModal','registerModal')">Registrate</a>
+    </p>
+  </div>
+</div>
+
+<!-- ─── MODAL: COMPRA ─────────────────────────────── -->
+<div class="modal-backdrop" id="buyModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('buyModal')">✕</button>
+    <h3 id="buyTitle">Comprar obra</h3>
+    <p class="modal-sub" id="buyDesc">Confirmá la compra con tus créditos disponibles</p>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:24px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span style="color:var(--muted);font-size:13px">Precio de la obra</span>
+        <span id="buyPriceShow" style="font-family:var(--font-mono);color:var(--accent2);font-weight:700"></span>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <span style="color:var(--muted);font-size:13px">Tus créditos</span>
+        <span id="buyCreditsShow" style="font-family:var(--font-mono);color:var(--gold);font-weight:700"></span>
+      </div>
+    </div>
+    <button class="btn btn-buy" id="buyConfirmBtn" onclick="confirmarCompra()">Confirmar compra con créditos</button>
+    <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:12px">Los créditos se descuentan de tu balance mensual</p>
+  </div>
+</div>
+
+<!-- ─── MODAL: RECARGA ────────────────────────────── -->
+<div class="modal-backdrop" id="rechargeModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('rechargeModal')">✕</button>
+    <h3>Agregar créditos</h3>
+    <p class="modal-sub">Comprá créditos adicionales con MercadoPago</p>
+    <div style="display:grid;gap:12px;margin-bottom:24px">
+      <div style="border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:.15s" onclick="seleccionarRecarga(this, 500)" class="recharge-option">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-family:var(--font-head);font-weight:700">$500 créditos</span>
+          <span style="color:var(--accent);font-family:var(--font-mono);font-weight:700">$500 ARS</span>
+        </div>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:.15s" onclick="seleccionarRecarga(this, 1000)" class="recharge-option">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-family:var(--font-head);font-weight:700">$1.000 créditos</span>
+          <span style="color:var(--accent);font-family:var(--font-mono);font-weight:700">$900 ARS <span style="color:var(--muted);font-size:11px">(-10%)</span></span>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-accent" style="width:100%;justify-content:center" onclick="iniciarRecarga()">Pagar con MercadoPago</button>
+  </div>
+</div>
+
+<!-- ─── SDK SUPABASE ──────────────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   CONFIG — reemplazá con tus credenciales reales
+   ═══════════════════════════════════════════════════ */
+const SUPABASE_URL  = 'https://TU_PROJECT_ID.supabase.co';
+const SUPABASE_ANON = 'TU_ANON_KEY';
+const WORKER_URL    = 'https://pixelvault-worker.TU_USUARIO.workers.dev'; // Cloudflare Worker para MP
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+/* ═══════════════════════════════════════════════════
+   ESTADO GLOBAL
+   ═══════════════════════════════════════════════════ */
+let currentUser   = null;
+let currentProfile = null;
+let selectedArt   = null;
+let selectedRechargeAmount = null;
+
+/* ═══════════════════════════════════════════════════
+   CATÁLOGO LOCAL (en producción vendría de Supabase)
+   ═══════════════════════════════════════════════════ */
+const CATALOG = [
+  { id: 1, title: 'Neon Genesis #01',     artist: 'VoidByte',    price: 500,  colors: ['#e8ff47','#09090b','#1a1a2e'], type: 'geometric' },
+  { id: 2, title: 'Plasma Drift',          artist: 'LoopArt',     price: 300,  colors: ['#ff6b35','#1a0a00','#ff9a5c'], type: 'fluid'     },
+  { id: 3, title: 'Cosmic Grid #7',        artist: 'MatrizStudio', price: 800, colors: ['#a855f7','#09090b','#ec4899'], type: 'grid'      },
+  { id: 4, title: 'Silver Noise',          artist: 'VoidByte',    price: 400,  colors: ['#94a3b8','#0f172a','#f1f5f9'], type: 'noise'     },
+  { id: 5, title: 'Acid Rain',             artist: 'PixelNomad',  price: 600,  colors: ['#84cc16','#052e00','#a3e635'], type: 'fluid'     },
+  { id: 6, title: 'Blueprint Alpha',       artist: 'MatrizStudio', price: 350, colors: ['#0ea5e9','#0c1629','#38bdf8'], type: 'geometric' },
+];
+
+/* ═══════════════════════════════════════════════════
+   GENERADOR DE ARTE EN CANVAS
+   ═══════════════════════════════════════════════════ */
+function drawArt(canvas, art) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width = 360;
+  const H = canvas.height = 270;
+  const [c1, c2, c3] = art.colors;
+
+  ctx.fillStyle = c2;
+  ctx.fillRect(0,0,W,H);
+
+  if (art.type === 'geometric') {
+    for (let i = 0; i < 12; i++) {
+      const x = Math.random()*W, y = Math.random()*H;
+      const s = 20 + Math.random()*80;
+      ctx.save();
+      ctx.translate(x,y); ctx.rotate(Math.random()*Math.PI);
+      ctx.strokeStyle = i%2===0 ? c1 : c3;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(-s/2,-s/2,s,s);
+      ctx.restore();
+    }
+    const grd = ctx.createLinearGradient(0,0,W,H);
+    grd.addColorStop(0, c1+'33'); grd.addColorStop(1, c3+'11');
+    ctx.fillStyle = grd; ctx.fillRect(0,0,W,H);
+  }
+
+  if (art.type === 'fluid') {
+    for (let i = 0; i < 8; i++) {
+      const grd = ctx.createRadialGradient(
+        Math.random()*W, Math.random()*H, 10,
+        Math.random()*W, Math.random()*H, 80+Math.random()*100
+      );
+      grd.addColorStop(0, c1+'99'); grd.addColorStop(1, c3+'00');
+      ctx.fillStyle = grd; ctx.fillRect(0,0,W,H);
+    }
+  }
+
+  if (art.type === 'grid') {
+    const size = 30;
+    for (let x=0; x<W; x+=size) for (let y=0; y<H; y+=size) {
+      if (Math.random()>.6) {
+        ctx.fillStyle = Math.random()>.5 ? c1+'cc' : c3+'99';
+        ctx.fillRect(x,y,size-2,size-2);
+      }
+    }
+  }
+
+  if (art.type === 'noise') {
+    const img = ctx.createImageData(W,H);
+    for (let i=0; i<img.data.length; i+=4) {
+      const v = Math.random()*100+100;
+      img.data[i]=img.data[i+1]=img.data[i+2]=v;
+      img.data[i+3]=255;
+    }
+    ctx.putImageData(img,0,0);
+    const grd = ctx.createLinearGradient(0,0,W,H);
+    grd.addColorStop(0,c1+'66'); grd.addColorStop(1,c3+'33');
+    ctx.fillStyle=grd; ctx.fillRect(0,0,W,H);
+  }
+
+  /* marca de agua si no es suscriptor */
+  if (!currentProfile?.is_pro) {
+    ctx.fillStyle = 'rgba(0,0,0,.5)';
+    ctx.fillRect(0,0,W,H);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER CATÁLOGO
+   ═══════════════════════════════════════════════════ */
+function renderCatalog() {
+  const grid = document.getElementById('artGrid');
+  grid.innerHTML = '';
+  const isPro = currentProfile?.is_pro;
+
+  CATALOG.forEach(art => {
+    const card = document.createElement('div');
+    card.className = 'art-card';
+
+    const isPurchased = currentProfile?.purchased_ids?.includes(art.id);
+
+    card.innerHTML = `
+      <div class="art-thumb">
+        <canvas id="canvas-${art.id}"></canvas>
+        <div class="art-locked-overlay">
+          <div class="lock-icon">${isPurchased ? '✓' : (isPro ? '🛒' : '🔒')}</div>
+          <div class="lock-text">${isPurchased ? 'Ya comprado' : (isPro ? 'Comprar con créditos' : 'Requiere suscripción')}</div>
+        </div>
+      </div>
+      <div class="art-info">
+        <div class="art-title">${art.title}</div>
+        <div class="art-meta">
+          <span class="art-artist">por ${art.artist}</span>
+          <span class="art-price">$${art.price}</span>
+        </div>
+        <span class="art-tag">${isPurchased ? '✓ EN TU COLECCIÓN' : 'DIGITAL · HD'}</span>
+        ${!isPurchased && isPro
+          ? `<button class="btn btn-buy" style="margin-top:14px" onclick="abrirCompra(${art.id})">Comprar con créditos</button>`
+          : !isPro
+          ? `<button class="btn btn-outline" style="width:100%;justify-content:center;margin-top:14px" onclick="openModal('registerModal')">Suscribite para comprar</button>`
+          : ''
+        }
+      </div>`;
+    grid.appendChild(card);
+
+    /* draw art after insert */
+    requestAnimationFrame(() => {
+      const canvas = document.getElementById(`canvas-${art.id}`);
+      if (canvas) drawArt(canvas, art);
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   AUTH
+   ═══════════════════════════════════════════════════ */
+async function registrar() {
+  const email = document.getElementById('reg-email').value.trim();
+  const pass  = document.getElementById('reg-pass').value;
+  if (!email || !pass) return toast('Completá todos los campos', 'error');
+
+  const { data, error } = await sb.auth.signUp({ email, password: pass });
+  if (error) return toast(error.message, 'error');
+
+  toast('¡Cuenta creada! Revisá tu email para confirmar.', 'success');
+  closeModal('registerModal');
+}
+
+async function login() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  if (!email || !pass) return toast('Completá todos los campos', 'error');
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  if (error) return toast('Email o contraseña incorrectos', 'error');
+
+  closeModal('loginModal');
+  toast('¡Bienvenido!', 'success');
+}
+
+async function logout() {
+  await sb.auth.signOut();
+  currentUser = currentProfile = null;
+  updateNav();
+  renderCatalog();
+  document.getElementById('creditBar').classList.add('hidden');
+}
+
+/* ═══════════════════════════════════════════════════
+   PERFIL
+   ═══════════════════════════════════════════════════ */
+async function loadProfile(userId) {
+  const { data } = await sb.from('profiles').select('*').eq('id', userId).single();
+  currentProfile = data;
+  if (data) {
+    document.getElementById('creditBar').classList.remove('hidden');
+    document.getElementById('creditAmount').textContent = `$${data.credits ?? 0}`;
+  }
+  renderCatalog();
+  updateNav();
+}
+
+/* ═══════════════════════════════════════════════════
+   NAV DINÁMICO
+   ═══════════════════════════════════════════════════ */
+function updateNav() {
+  const nav = document.getElementById('navActions');
+  if (!currentUser) {
+    nav.innerHTML = `
+      <button class="btn btn-ghost" onclick="openModal('loginModal')">Ingresar</button>
+      <button class="btn btn-accent" onclick="openModal('registerModal')">Empezar gratis</button>`;
+  } else {
+    const isPro = currentProfile?.is_pro;
+    const initial = currentUser.email[0].toUpperCase();
+    nav.innerHTML = `
+      <div class="user-chip">
+        <div class="avatar">${initial}</div>
+        <span>${currentUser.email.split('@')[0]}</span>
+        <span class="${isPro ? 'badge-pro' : 'badge-free'}">${isPro ? 'PRO' : 'FREE'}</span>
+      </div>
+      ${!isPro ? `<button class="btn btn-accent" onclick="iniciarSuscripcion()">Suscribirme</button>` : ''}
+      <button class="btn btn-ghost" onclick="logout()">Salir</button>`;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   SUSCRIPCIÓN — llama al Worker de Cloudflare
+   ═══════════════════════════════════════════════════ */
+async function iniciarSuscripcion() {
+  if (!currentUser) { openModal('loginModal'); return; }
+
+  toast('Iniciando checkout...', 'info');
+  try {
+    const res = await fetch(`${WORKER_URL}/crear-suscripcion`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: currentUser.id,
+        email:   currentUser.email
+      })
+    });
+    const { init_point, error } = await res.json();
+    if (error) throw new Error(error);
+    window.location.href = init_point; // redirige a MP checkout
+  } catch (e) {
+    toast('Error al iniciar suscripción: ' + e.message, 'error');
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   COMPRA CON CRÉDITOS
+   ═══════════════════════════════════════════════════ */
+function abrirCompra(artId) {
+  if (!currentUser)    { openModal('loginModal');   return; }
+  if (!currentProfile?.is_pro) { toast('Necesitás una suscripción Pro', 'error'); return; }
+
+  selectedArt = CATALOG.find(a => a.id === artId);
+  const credits = currentProfile?.credits ?? 0;
+
+  document.getElementById('buyTitle').textContent   = selectedArt.title;
+  document.getElementById('buyDesc').textContent    = `por ${selectedArt.artist}`;
+  document.getElementById('buyPriceShow').textContent = `$${selectedArt.price}`;
+  document.getElementById('buyCreditsShow').textContent = `$${credits}`;
+
+  const btn = document.getElementById('buyConfirmBtn');
+  btn.disabled = credits < selectedArt.price;
+  if (credits < selectedArt.price) btn.textContent = 'Créditos insuficientes';
+  else btn.textContent = 'Confirmar compra con créditos';
+
+  openModal('buyModal');
+}
+
+async function confirmarCompra() {
+  if (!selectedArt || !currentUser) return;
+
+  const btn = document.getElementById('buyConfirmBtn');
+  btn.disabled = true;
+  btn.textContent = 'Procesando...';
+
+  const { data, error } = await sb.rpc('comprar_obra', {
+    p_user_id: currentUser.id,
+    p_art_id:  selectedArt.id,
+    p_price:   selectedArt.price
+  });
+
+  if (error) {
+    toast('Error: ' + error.message, 'error');
+    btn.disabled = false;
+    btn.textContent = 'Confirmar compra';
+    return;
+  }
+
+  toast(`¡Compraste "${selectedArt.title}"! 🎉`, 'success');
+  closeModal('buyModal');
+  await loadProfile(currentUser.id);
+}
+
+/* ═══════════════════════════════════════════════════
+   RECARGA DE CRÉDITOS
+   ═══════════════════════════════════════════════════ */
+function seleccionarRecarga(el, amount) {
+  document.querySelectorAll('.recharge-option').forEach(o => {
+    o.style.borderColor = 'var(--border)';
+    o.style.background  = 'transparent';
+  });
+  el.style.borderColor = 'var(--accent)';
+  el.style.background  = 'rgba(232,255,71,.05)';
+  selectedRechargeAmount = amount;
+}
+
+async function iniciarRecarga() {
+  if (!selectedRechargeAmount) { toast('Seleccioná un monto', 'error'); return; }
+
+  try {
+    const res = await fetch(`${WORKER_URL}/crear-preferencia`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id:  currentUser.id,
+        amount:   selectedRechargeAmount === 1000 ? 900 : 500,
+        credits:  selectedRechargeAmount,
+        type:     'recharge'
+      })
+    });
+    const { init_point } = await res.json();
+    window.location.href = init_point;
+  } catch(e) {
+    toast('Error: ' + e.message, 'error');
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   MODALES
+   ═══════════════════════════════════════════════════ */
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+function switchModal(from, to) {
+  closeModal(from); openModal(to);
+}
+document.querySelectorAll('.modal-backdrop').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+/* ═══════════════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════════════ */
+function toast(msg, type='info') {
+  const el = document.createElement('div');
+  el.className = `toast-item toast-${type}`;
+  el.textContent = msg;
+  document.getElementById('toast').appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+/* ═══════════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════════ */
+function scrollTo(selector) {
+  document.querySelector(selector)?.scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ═══════════════════════════════════════════════════
+   RETORNO DE MERCADOPAGO
+   ═══════════════════════════════════════════════════ */
+function checkReturnFromMP() {
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get('status') || params.get('collection_status');
+  if (status === 'approved') {
+    toast('¡Pago aprobado! Tu cuenta fue actualizada.', 'success');
+    window.history.replaceState({}, '', window.location.pathname);
+  } else if (status === 'pending') {
+    toast('Pago pendiente. Te avisaremos cuando se acredite.', 'info');
+  } else if (status === 'failure') {
+    toast('El pago no se pudo procesar. Intentá de nuevo.', 'error');
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════ */
+async function init() {
+  checkReturnFromMP();
+  renderCatalog(); // catálogo sin auth
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    await loadProfile(currentUser.id);
+  } else {
+    updateNav();
+  }
+
+  /* escuchar cambios de auth en tiempo real */
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN') {
+      currentUser = session.user;
+      await loadProfile(currentUser.id);
+    } else if (event === 'SIGNED_OUT') {
+      currentUser = currentProfile = null;
+      updateNav();
+      renderCatalog();
+      document.getElementById('creditBar').classList.add('hidden');
+    }
+  });
+}
+
+init();
+</script>
+</body>
+</html>
